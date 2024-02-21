@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.template.loader import render_to_string
 
 from educa.apps.courses.fields import OrderField
 
@@ -28,6 +29,8 @@ class Course(models.Model):
     slug = models.SlugField(unique=True,allow_unicode=True)
     overview = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    students = models.ManyToManyField('users.User',related_name='course_joined',blank=True)
 
     class Meta:
         ordering = ['-created']
@@ -60,6 +63,7 @@ class Content(models.Model):
     item = GenericForeignKey('content_type','object_id')
     order = OrderField(blank=True,for_fields=['module'])
 
+
     class Meta:
         verbose_name = 'Content'
         verbose_name_plural = 'Contents'
@@ -70,6 +74,7 @@ class ItemBase(models.Model):
     title = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         abstract = True
